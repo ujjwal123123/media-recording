@@ -1,5 +1,6 @@
 // import { useState } from "react";
-import Button from "./button";
+import CameraButton from "./camera_button";
+import ScreenButton from "./screen_button";
 
 function Header({ title }: { title: string }) {
   return <h1>{title ? title : "Default title"}</h1>;
@@ -16,14 +17,12 @@ function Ul({ names }: { names: string[] }) {
 }
 
 export default function HomePage() {
-  const names = ["Ada Lovelace", "Grace Hopper", "Margaret Hamilton"];
-
   return (
     <div>
-      <Header title="Develop. Preview. Ship." />
-      <Ul names={names} />
+      <Header title="Screen and Presentation Recorder" />
 
-      <Button />
+      <CameraButton />
+      <ScreenButton />
     </div>
   );
 }
