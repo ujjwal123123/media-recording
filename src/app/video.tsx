@@ -22,6 +22,7 @@ export function VideoPlayer({
       <>
         <p>Recording video</p>
         <video
+          muted
           ref={(ref) => {
             if (ref) ref.srcObject = mediaSource;
           }}
@@ -38,7 +39,7 @@ export function VideoPlayer({
 
     return (
       <>
-        <video src={mediaSource}  controls autoPlay width="600" />
+        <video src={mediaSource} controls autoPlay width="600" />
         <br />
         <a href={mediaSource} download>
           Download recording
