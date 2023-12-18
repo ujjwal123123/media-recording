@@ -5,34 +5,50 @@ export function VideoPlayer({
   mediaSource,
   recordingState,
 }: {
-  mediaSource: string | MediaStream | null;
+  mediaSource: Blob | MediaStream | null;
   recordingState: RecordingState;
 }) {
   if (
     recordingState == RecordingState.Ready ||
     recordingState == RecordingState.RequestingPermission
   ) {
-    return <p>No video source {typeof mediaSource}</p>;
+    return <p>No video source</p>;
   } else if (
     recordingState == RecordingState.Recording &&
     mediaSource instanceof MediaStream
   ) {
-    // return <p>Recording... {typeof mediaSource}</p>;
+    // return <p>Recording video...</p>;
     return (
-      <video
-        ref={(ref) => {
-          if (ref) ref.srcObject = mediaSource;
-        }}
-        autoPlay
-        width="600"
-      />
+      <>
+        <p>Recording video</p>
+        <video
+          ref={(ref) => {
+            if (ref) ref.srcObject = mediaSource;
+          }}
+          autoPlay
+          width="600"
+        />
+      </>
     );
   } else if (
     recordingState == RecordingState.Recorded &&
-    typeof mediaSource == "string"
+    mediaSource instanceof Blob
   ) {
-    console.log("mediaSource", mediaSource);
-    // play bugs bunny
-    return <video src={mediaSource} controls autoPlay width="600" />;
+    const videoUrl = URL.createObjectURL(mediaSource);
+    console.log("videoUrl", videoUrl);
+
+    return (
+      <>
+        <video controls autoPlay width="600">
+          <source src={videoUrl} type="video/webm" />
+        </video>
+        <br />
+        <a href={videoUrl} download>
+          Download recording
+        </a>
+      </>
+    );
+  } else {
+    return <p color="red">Unknown state {recordingState}</p>;
   }
 }

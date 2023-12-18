@@ -20,9 +20,9 @@ function Ul({ names }: { names: string[] }) {
 }
 
 export default function HomePage() {
-  const [mediaSource, setMediaSource] = useState<null | MediaStream | string>(
+  const [mediaSource, setMediaSource] = useState<null | MediaStream | Blob>(
     null
-  );
+  ); // media to be displayed in video element
   const [recordingState, setRecordingState] = useState(RecordingState.Ready);
 
   return (
@@ -34,7 +34,11 @@ export default function HomePage() {
         setRecordingState={setRecordingState}
         setMediaSource={setMediaSource}
       />
-      <ScreenButton />
+      {/* <ScreenButton
+        recordingState={recordingState}
+        setRecordingState={setRecordingState}
+        setMediaSource={setMediaSource}
+      /> */}
       <br />
       <VideoPlayer mediaSource={mediaSource} recordingState={recordingState} />
     </>

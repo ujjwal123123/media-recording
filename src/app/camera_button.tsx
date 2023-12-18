@@ -10,7 +10,7 @@ export default function CameraButton({
 }: {
   recordingState: RecordingState;
   setRecordingState: Dispatch<SetStateAction<RecordingState>>;
-  setMediaSource: Dispatch<SetStateAction<string | MediaStream | null>>;
+  setMediaSource: Dispatch<SetStateAction<Blob | MediaStream | null>>;
 }) {
   const recordedChunks = useRef<Blob[]>([]);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
@@ -38,8 +38,8 @@ export default function CameraButton({
       mediaRecorder.current.onstop = (event) => {
         mediaStream.current?.getTracks().forEach((track) => track.stop());
         const blob = new Blob(recordedChunks.current, { type: "video/webm" });
-        const videoUrl = URL.createObjectURL(blob);
-        setMediaSource(videoUrl);
+        // const videoUrl = URL.createObjectURL(blob);
+        setMediaSource(blob);
         setRecordingState(RecordingState.Recorded);
       };
     });
