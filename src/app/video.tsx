@@ -5,7 +5,7 @@ export function VideoPlayer({
   mediaSource,
   recordingState,
 }: {
-  mediaSource: Blob | MediaStream | null;
+  mediaSource: string | MediaStream | null;
   recordingState: RecordingState;
 }) {
   if (
@@ -32,18 +32,15 @@ export function VideoPlayer({
     );
   } else if (
     recordingState == RecordingState.Recorded &&
-    mediaSource instanceof Blob
+    typeof mediaSource == "string"
   ) {
-    const videoUrl = URL.createObjectURL(mediaSource);
-    console.log("videoUrl", videoUrl);
+    console.log("videoUrl", mediaSource);
 
     return (
       <>
-        <video controls autoPlay width="600">
-          <source src={videoUrl} type="video/webm" />
-        </video>
+        <video src={mediaSource}  controls autoPlay width="600" />
         <br />
-        <a href={videoUrl} download>
+        <a href={mediaSource} download>
           Download recording
         </a>
       </>
