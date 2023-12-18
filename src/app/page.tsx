@@ -1,6 +1,9 @@
-// import { useState } from "react";
+"use client";
+import { useState } from "react";
 import CameraButton from "./camera_button";
 import ScreenButton from "./screen_button";
+import { RecordingState } from "./utils";
+import { VideoPlayer } from "./video";
 
 function Header({ title }: { title: string }) {
   return <h1>{title ? title : "Default title"}</h1>;
@@ -17,12 +20,23 @@ function Ul({ names }: { names: string[] }) {
 }
 
 export default function HomePage() {
+  const [mediaSource, setMediaSource] = useState<null | MediaStream | string>(
+    null
+  );
+  const [recordingState, setRecordingState] = useState(RecordingState.Ready);
+
   return (
-    <div>
+    <>
       <Header title="Screen and Presentation Recorder" />
 
-      <CameraButton />
+      <CameraButton
+        recordingState={recordingState}
+        setRecordingState={setRecordingState}
+        setMediaSource={setMediaSource}
+      />
       <ScreenButton />
-    </div>
+      <br />
+      <VideoPlayer mediaSource={mediaSource} recordingState={recordingState} />
+    </>
   );
 }
