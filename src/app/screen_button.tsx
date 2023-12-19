@@ -20,29 +20,41 @@ export default function CameraButton({
     setRecordingState(RecordingState.RequestingPermission);
     setMediaSource(null);
 
-    let displayStream = navigator.mediaDevices.getDisplayMedia({
+    let displayStreamPromise = navigator.mediaDevices.getDisplayMedia({
       video: true,
+      audio: false, // TODO: give user option to record system audio or not
+    });
+    let userAudioStreamPromise = navigator.mediaDevices.getUserMedia({
+      video: false, // TODO: give user an option to record their camera as well
       audio: true, // TODO: give user option to record audio or not
     });
 
-    displayStream.then((stream) => {
-      mediaRecorder.current = new MediaRecorder(stream);
-      mediaStream.current = stream;
-      mediaRecorder.current.ondataavailable = (event) => {
-        recordedChunks.current.push(event.data);
-      };
-      mediaRecorder.current.start();
-      setRecordingState(RecordingState.Recording);
-      setMediaSource(stream);
+    Promise.all([displayStreamPromise, userAudioStreamPromise]).then(
+      ([displayStream, userAudioStream]) => {
+        let combinedStream = new MediaStream([
+          ...displayStream.getTracks(),
+          ...userAudioStream.getTracks(),
+        ]);
+        mediaRecorder.current = new MediaRecorder(combinedStream);
+        recordedChunks.current = [];
+        mediaStream.current = combinedStream;
+        mediaRecorder.current.ondataavailable = (event) => {
+          recordedChunks.current.push(event.data);
+        };
+        mediaRecorder.current.start();
+        setRecordingState(RecordingState.Recording);
+        setMediaSource(combinedStream);
 
-      mediaRecorder.current.onstop = (event) => {
-        mediaStream.current?.getTracks().forEach((track) => track.stop());
-        const blob = new Blob(recordedChunks.current, { type: "video/webm" });
-        const videoUrl = URL.createObjectURL(blob);
-        setMediaSource(videoUrl);
-        setRecordingState(RecordingState.Recorded);
-      };
-    });
+        mediaRecorder.current.onstop = (event) => {
+          mediaStream.current?.getTracks().forEach((track) => track.stop());
+          const blob = new Blob(recordedChunks.current, { type: "video/webm" });
+          recordedChunks.current = [];
+          const videoUrl = URL.createObjectURL(blob);
+          setMediaSource(videoUrl);
+          setRecordingState(RecordingState.Recorded);
+        };
+      }
+    );
   }
 
   function stopRecording() {

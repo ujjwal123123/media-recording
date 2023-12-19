@@ -29,16 +29,16 @@ export default function HomePage() {
     <>
       <Header title="Screen and Presentation Recorder" />
 
-      <CameraButton
-        recordingState={recordingState}
-        setRecordingState={setRecordingState}
-        setMediaSource={setMediaSource}
-      />
-      {/* <ScreenButton
+      {/* <CameraButton
         recordingState={recordingState}
         setRecordingState={setRecordingState}
         setMediaSource={setMediaSource}
       /> */}
+      <ScreenButton
+        recordingState={recordingState}
+        setRecordingState={setRecordingState}
+        setMediaSource={setMediaSource}
+      />
       <br />
       <VideoPlayer mediaSource={mediaSource} recordingState={recordingState} />
     </>
