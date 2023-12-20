@@ -1,6 +1,21 @@
 "use client";
 import { RecordingState } from "./utils";
 
+function uploadVideoToServer(videoUrl: string) {
+  // upload a blob to the server
+  const data = new FormData();
+  fetch(videoUrl)
+    .then((r) => r.blob())
+    .then((blob) => {
+      data.append("file", blob);
+      return fetch("/api/upload", {
+        method: "PUT",
+        body: data,
+      });
+    })
+    .then(() => console.log("Uploaded to server"));
+}
+
 export function VideoPlayer({
   mediaSource,
   recordingState,
@@ -43,6 +58,10 @@ export function VideoPlayer({
         <br />
         <a href={mediaSource} download>
           Download recording
+        </a>
+        <br />
+        <a href="#" onClick={() => uploadVideoToServer(mediaSource)}>
+          Upload to the server
         </a>
       </>
     );
