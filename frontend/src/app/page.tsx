@@ -4,6 +4,7 @@ import CameraButton from "./camera_button";
 import ScreenButton from "./screen_button";
 import { RecordingState } from "./utils";
 import { VideoPlayer } from "./video";
+import GetVideo from "./getVideo";
 
 function Header({ title }: { title: string }) {
   return <h1>{title ? title : "Default title"}</h1>;
@@ -41,6 +42,9 @@ export default function HomePage() {
       />
       <br />
       <VideoPlayer mediaSource={mediaSource} recordingState={recordingState} />
+
+      <br />
+      <GetVideo />
     </>
   );
 }

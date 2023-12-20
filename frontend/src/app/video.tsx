@@ -13,7 +13,10 @@ function uploadVideoToServer(videoUrl: string) {
         body: data,
       });
     })
-    .then(() => console.log("Uploaded to server"));
+    .then((res: Response) => {
+      console.log("Uploaded to server");
+      console.log(res.json());
+    });
 }
 
 export function VideoPlayer({
@@ -50,8 +53,6 @@ export function VideoPlayer({
     recordingState == RecordingState.Recorded &&
     typeof mediaSource == "string"
   ) {
-    console.log("videoUrl", mediaSource);
-
     return (
       <>
         <video src={mediaSource} controls autoPlay width="600" />
