@@ -21,6 +21,7 @@ flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     redirect_uri="http://127.0.0.1:8000/coderedirect",
 )
 
+
 @app.get("/")
 def index():
     authorization_uri, state = flow.authorization_url(access_type="offline")
@@ -33,15 +34,14 @@ def coderedirect(code: str = None):
     try:
         flow.fetch_token(code=code)
         credentials = flow.credentials
-        if credentials.expired and credentials.refresh_token: 
-            print('refreshing token')
+        if credentials.expired and credentials.refresh_token:
+            print("refreshing token")
             credentials.refresh_token(Request())
 
-        drive = build('drive', 'v3', credentials=credentials)
+        drive = build("drive", "v3", credentials=credentials)
         res = upload_file(drive)
 
-
-    except HttpError as error: 
+    except HttpError as error:
         print(f"err: {error}")
 
     return res

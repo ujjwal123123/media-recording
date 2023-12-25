@@ -13,6 +13,7 @@ def root():
 
 @app.put("/upload")
 async def upload_video(file: UploadFile, response: Response):
+    """Upload video to the file system"""
     if file is None or file.filename is None:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": "No file"}
@@ -27,6 +28,7 @@ async def upload_video(file: UploadFile, response: Response):
 
 @app.get("/video/{filename}")
 async def get_video(filename: str, response: Response):
+    """Send video from the file system to the client"""
     if filename is None:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": "No file"}
