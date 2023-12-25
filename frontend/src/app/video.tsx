@@ -1,7 +1,11 @@
 "use client";
 import { RecordingState } from "./utils";
+import { useRef } from "react";
 
-function uploadVideoToServer(videoUrl: string) {
+function uploadVideoToServer(
+  videoUrl: string,
+  infoText: React.RefObject<HTMLParagraphElement>
+) {
   // upload a blob to the server
   const data = new FormData();
   fetch(videoUrl)
@@ -13,9 +17,11 @@ function uploadVideoToServer(videoUrl: string) {
         body: data,
       });
     })
-    .then((res: Response) => {
-      console.log("Uploaded to server");
-      console.log(res.json());
+    .then(async (res: Response) => {
+      const data = await res.json();
+      if (infoText.current) {
+        infoText.current.innerText = `Uploaded to server with filename ${data.filename}. Use this filename to get the video from the server.`;
+      }
     });
 }
 
@@ -53,6 +59,7 @@ export function VideoPlayer({
     recordingState == RecordingState.Recorded &&
     typeof mediaSource == "string"
   ) {
+    const infoText = useRef<HTMLParagraphElement>(null);
     return (
       <>
         <video src={mediaSource} controls autoPlay width="600" />
@@ -61,9 +68,10 @@ export function VideoPlayer({
           Download recording
         </a>
         <br />
-        <a href="#" onClick={() => uploadVideoToServer(mediaSource)}>
+        <a href="#" onClick={() => uploadVideoToServer(mediaSource, infoText)}>
           Upload to the server
         </a>
+        <p ref={infoText}></p>
       </>
     );
   } else {

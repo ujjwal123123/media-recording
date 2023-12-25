@@ -26,7 +26,7 @@ export default function GetVideo() {
       </form>
       <div>
         <p>Video:</p>
-        <video ref={videoRef}></video>
+        <video muted width="600" ref={videoRef}></video>
       </div>
     </>
   );
