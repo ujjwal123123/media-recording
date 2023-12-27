@@ -59,7 +59,7 @@ export function VideoPlayer({
     recordingState == RecordingState.Recorded &&
     typeof mediaSource == "string"
   ) {
-    const infoText = useRef<HTMLParagraphElement>(null);
+    // const infoText = useRef<HTMLParagraphElement>(null);
     return (
       <>
         <a id="download-button" href={mediaSource} download>
