@@ -14,6 +14,7 @@ def upload_file(drive):
         )
         print(f'File ID: {file.get("id")}')
 
+        return file.get("id")
+
     except HttpError as error:
         print(f"error: {error}")
-    return file.get("id")
