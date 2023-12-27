@@ -62,16 +62,15 @@ export function VideoPlayer({
     const infoText = useRef<HTMLParagraphElement>(null);
     return (
       <>
-        <video src={mediaSource} controls autoPlay width="600" />
-        <br />
-        <a href={mediaSource} download>
-          Download recording
+        <a id="download-button" href={mediaSource} download>
+          Download this recording
         </a>
         <br />
-        <a href="#" onClick={() => uploadVideoToServer(mediaSource, infoText)}>
+        <video src={mediaSource} controls autoPlay />
+        {/* <a href="#" onClick={() => uploadVideoToServer(mediaSource, infoText)}>
           Upload to the server
         </a>
-        <p ref={infoText}></p>
+        <p ref={infoText}></p> */}
       </>
     );
   } else {

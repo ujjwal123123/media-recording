@@ -1,0 +1,66 @@
+Button,
+a#download-button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 1em;
+  margin: 0.5em;
+  text-align: center;
+  text-decoration: none;
+  font-size: 18px;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3e8e41;
+    box-shadow: 0 0 10px #3e8e41;
+  }
+
+  &:active {
+    background-color: #368839;
+    box-shadow: 0 0 15px #3e8e41;
+  }
+}
+
+div.hero {
+  margin: 0;
+  background-color: rgb(164, 255, 61);
+  padding-top: 8vh;
+  padding-bottom: 8vh;
+}
+
+video {
+  max-width: 700px;
+  margin: 1em;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 3em;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+h1,
+h2 {
+  margin: 0 auto;
+  padding: 2vh 10px;
+  max-width: 700px;
+}
+
+div.container {
+  margin: 0 auto;
+  padding: 5vh 10px;
+  max-width: 700px;
+  text-align: center;
+}

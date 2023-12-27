@@ -1,6 +1,5 @@
 "use client";
 import { Dispatch, SetStateAction, useRef } from "react";
-import "./button.css";
 import { RecordingState } from "./utils";
 
 export default function CameraButton({
@@ -66,8 +65,8 @@ export default function CameraButton({
     recordingState == RecordingState.Ready ||
     recordingState == RecordingState.Recorded
   ) {
-    return <button onClick={startRecording}>Share screen</button>;
+    return <button onClick={startRecording}>Start a new recording</button>;
   } else {
-    return <button onClick={stopRecording}>Stop sharing screen</button>;
+    return <button onClick={stopRecording}>Stop recording</button>;
   }
 }

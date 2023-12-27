@@ -5,6 +5,7 @@ import ScreenButton from "./screen_button";
 import { RecordingState } from "./utils";
 import { VideoPlayer } from "./video";
 import GetVideo from "./getVideo";
+import "./style.scss";
 
 function Header({ title }: { title: string }) {
   return <h1>{title ? title : "Default title"}</h1>;
@@ -20,6 +21,15 @@ function Ul({ names }: { names: string[] }) {
   );
 }
 
+function Hero() {
+  return (
+    <div className="hero">
+      <h1>Record screen and presentations, for free!</h1>
+      <h2>Without downloading any software!</h2>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [mediaSource, setMediaSource] = useState<null | MediaStream | string>(
     null
@@ -28,23 +38,27 @@ export default function HomePage() {
 
   return (
     <>
-      <Header title="Screen and Presentation Recorder" />
+      <Hero />
 
       {/* <CameraButton
         recordingState={recordingState}
         setRecordingState={setRecordingState}
         setMediaSource={setMediaSource}
       /> */}
-      <ScreenButton
-        recordingState={recordingState}
-        setRecordingState={setRecordingState}
-        setMediaSource={setMediaSource}
-      />
-      <br />
-      <VideoPlayer mediaSource={mediaSource} recordingState={recordingState} />
+      <div className="container">
+        <ScreenButton
+          recordingState={recordingState}
+          setRecordingState={setRecordingState}
+          setMediaSource={setMediaSource}
+        />
+        <VideoPlayer
+          mediaSource={mediaSource}
+          recordingState={recordingState}
+        />
+      </div>
 
-      <br />
-      <GetVideo />
+      {/* <br />
+      <GetVideo /> */}
     </>
   );
 }

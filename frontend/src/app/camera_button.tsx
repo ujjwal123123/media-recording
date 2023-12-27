@@ -1,6 +1,5 @@
 "use client";
 import { Dispatch, SetStateAction, useRef } from "react";
-import "./button.css";
 import { RecordingState } from "./utils";
 
 export default function CameraButton({
