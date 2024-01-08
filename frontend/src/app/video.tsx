@@ -25,6 +25,32 @@ function uploadVideoToServer(
     });
 }
 
+export function DownloadButton({ mediaSource }: { mediaSource: string }) {
+  return (
+    <a id="download-button" href={mediaSource} download>
+      Download this recording
+    </a>
+  );
+}
+
+export function StateMessage({
+  recordingState,
+}: {
+  recordingState: RecordingState;
+}) {
+  if (recordingState == RecordingState.Ready) {
+    return <p>Ready to record</p>;
+  } else if (recordingState == RecordingState.RequestingPermission) {
+    return <p>Requesting permission...</p>;
+  } else if (recordingState == RecordingState.Recording) {
+    return <p>Recording...</p>;
+  } else if (recordingState == RecordingState.Recorded) {
+    return <p>Recorded</p>;
+  } else {
+    throw new Error("unknown recording state");
+  }
+}
+
 export function VideoPlayer({
   mediaSource,
   recordingState,
@@ -34,24 +60,23 @@ export function VideoPlayer({
 }) {
   if (
     recordingState == RecordingState.Ready ||
-    recordingState == RecordingState.RequestingPermission
+    recordingState == RecordingState.RequestingPermission ||
+    mediaSource == null
   ) {
-    return <p>No video source</p>;
+    return <StateMessage recordingState={recordingState} />;
   } else if (
     recordingState == RecordingState.Recording &&
     mediaSource instanceof MediaStream
   ) {
-    // return <p>Recording video...</p>;
     return (
       <>
-        <p>Recording video</p>
+        <StateMessage recordingState={recordingState} />;
         <video
           muted
           ref={(ref) => {
             if (ref) ref.srcObject = mediaSource;
           }}
           autoPlay
-          width="600"
         />
       </>
     );
@@ -59,21 +84,15 @@ export function VideoPlayer({
     recordingState == RecordingState.Recorded &&
     typeof mediaSource == "string"
   ) {
-    // const infoText = useRef<HTMLParagraphElement>(null);
     return (
       <>
-        <a id="download-button" href={mediaSource} download>
-          Download this recording
-        </a>
+        <DownloadButton mediaSource={mediaSource.toString()} />
         <br />
+        <StateMessage recordingState={recordingState} />
         <video src={mediaSource} controls autoPlay />
-        {/* <a href="#" onClick={() => uploadVideoToServer(mediaSource, infoText)}>
-          Upload to the server
-        </a>
-        <p ref={infoText}></p> */}
       </>
     );
   } else {
-    return <p color="red">Unknown state {recordingState}</p>;
+    throw new Error("unknown video state");
   }
 }

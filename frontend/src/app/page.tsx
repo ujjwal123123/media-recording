@@ -1,25 +1,9 @@
 "use client";
-import { useState } from "react";
-import CameraButton from "./camera_button";
+import { useRef, useState } from "react";
 import ScreenButton from "./screen_button";
 import { RecordingState } from "./utils";
 import { VideoPlayer } from "./video";
-import GetVideo from "./getVideo";
 import "./style.scss";
-
-function Header({ title }: { title: string }) {
-  return <h1>{title ? title : "Default title"}</h1>;
-}
-
-function Ul({ names }: { names: string[] }) {
-  return (
-    <ul>
-      {names.map((name) => (
-        <li key={name}>{name}</li>
-      ))}
-    </ul>
-  );
-}
 
 function Hero() {
   return (
@@ -36,29 +20,78 @@ export default function HomePage() {
   ); // media to be displayed in video element
   const [recordingState, setRecordingState] = useState(RecordingState.Ready);
 
+  const recordedChunks = useRef<Blob[]>([]);
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const mediaStream = useRef<MediaStream | null>(null);
+
+  function requestRecording() {
+    setRecordingState(RecordingState.RequestingPermission);
+
+    let displayStreamPromise = navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false, // TODO: give user option to record system audio or not
+    });
+    let userAudioStreamPromise = navigator.mediaDevices.getUserMedia({
+      video: false, // TODO: give user an option to record their camera as well
+      audio: true, // TODO: give user option to record audio or not
+    });
+
+    Promise.all([displayStreamPromise, userAudioStreamPromise])
+      .then(([displayStream, userAudioStream]) => {
+        let combinedStream = new MediaStream([
+          ...displayStream.getTracks(),
+          ...userAudioStream.getTracks(),
+        ]);
+        mediaRecorder.current = new MediaRecorder(combinedStream);
+        recordedChunks.current = [];
+        mediaStream.current = combinedStream;
+        mediaRecorder.current.ondataavailable = (event) => {
+          recordedChunks.current.push(event.data);
+        };
+        mediaRecorder.current.start();
+        URL.revokeObjectURL(mediaSource as string);
+        setMediaSource(null);
+        setRecordingState(RecordingState.Recording);
+        setMediaSource(combinedStream);
+
+        mediaRecorder.current.onstop = (event) => {
+          stopRecording();
+        };
+        combinedStream
+          .getTracks()
+          .forEach((track) => (track.onended = stopRecording));
+      })
+      .catch((error) => {
+        setRecordingState(RecordingState.Recorded);
+      });
+  }
+
+  function stopRecording() {
+    mediaRecorder.current?.requestData;
+    mediaRecorder.current?.stop();
+    mediaStream.current?.getTracks().forEach((track) => track.stop());
+    const blob = new Blob(recordedChunks.current, { type: "video/webm" });
+    recordedChunks.current = [];
+    const videoUrl = URL.createObjectURL(blob);
+    setMediaSource(videoUrl);
+    setRecordingState(RecordingState.Recorded);
+  }
+
   return (
     <>
       <Hero />
 
-      {/* <CameraButton
-        recordingState={recordingState}
-        setRecordingState={setRecordingState}
-        setMediaSource={setMediaSource}
-      /> */}
       <div className="container">
         <ScreenButton
           recordingState={recordingState}
-          setRecordingState={setRecordingState}
-          setMediaSource={setMediaSource}
+          requestRecording={requestRecording}
+          stopRecording={stopRecording}
         />
         <VideoPlayer
           mediaSource={mediaSource}
           recordingState={recordingState}
         />
       </div>
-
-      {/* <br />
-      <GetVideo /> */}
     </>
   );
 }
